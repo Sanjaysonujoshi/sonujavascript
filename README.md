@@ -1,2 +1,2 @@
-# sonujavascript
+# sonujavascriptfromstrach
 learning java script 
