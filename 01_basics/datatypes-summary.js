@@ -30,3 +30,25 @@ let myobj={
 }
 
 console.log(typeof bigNumber)
+
+
+//++++++++++++++++++++++++++++++++++++++++++++
+
+//stack(preimitive) = get copy
+// Heap (Non-primitive)= get refrence(orignal)
+
+let myYoutubename = "sanjay"
+
+ anothername = "chaiaurcode"
+ console.log(myYoutubename)
+console.log(anothername)
+
+let usrone ={
+    email:"sonujoshigmail.com",
+    name:"sanjayjoshi"
+}
+
+let usrTwo = usrone
+usrTwo.email = "usr@google.com"
+console.log(usrone.email)
+console.log(usrTwo.email)
