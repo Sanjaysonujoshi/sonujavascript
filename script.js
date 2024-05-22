@@ -1,40 +1,93 @@
-const search = document.querySelector('.search input')
-const searchbtn = document.querySelector('.search button')
-const weathericon= document.querySelector('.whethericon')
+let randomNumber = parseInt(Math.random() * 100 + 1);
 
-const apikey = "938b3ec6e4a678344efe4e6dce2dc78f"
-const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q="
+const submit = document.querySelector('#subt');
 
-async function checkwether(city) {
-    const response = await fetch(apiUrl + city+`&appid=${apikey}`);
-    if(response.status == 404){
-        document.querySelector(".error").style.display ="block";
-        document.querySelector(".weather").style.display ="none";
-    }else{
-        var data = await response.json()
-   
+const userInput = document.querySelector('#guessField');
 
-        document.querySelector('.city').innerHTML = data.name;
-        document.querySelector('.temp').innerHTML =Math.round(data.main.temp) +"°c";
-        document.querySelector('.humidity').innerHTML = data.main.humidity +"%"
-        document.querySelector('.wind').innerHTML =data.wind.speed+ "km/h";
-       if(data.weather[0].main == "Clouds"){
-           weathericon.src = "./clouds.png"
-       } else if (data.weather[0].main == "Clear"){
-        weathericon.src ="./clear.png"
-    }  else if    (data.weather[0].main == "Rain"){
-        weathericon.src ="./rain.png"
-    }   else if   (data.weather[0].main == "Drizzle"){
-        weathericon.src ="./drizzle.png"
-    } else if(data.weather[0].main == "Mist"){
-        weathericon.src ="./mist.png";
-    }
-    document.querySelector(".whether").style.display ="block"
-    document.querySelector(".error").style.display ="none";
-    }
-    
-   
+const guessSlot = document.querySelector('.guesses');
+
+const remaining = document.querySelector('.lastResult');
+
+const lowOrHi = document.querySelector('.lowOrHi');
+
+const startOver = document.querySelector('.resultParas');
+
+const p = document.createElement('p');
+
+let prevGuess = [];
+let numGuess = 1;
+
+let playGame = true;
+if (playGame) {
+  submit.addEventListener('click', function (e) {
+    e.preventDefault();
+    const guess = parseInt(userInput.value);
+    console.log(guess);
+    validateGuess(guess);
+  });
 }
-searchbtn.addEventListener('click',()=>{
-    checkwether(search.value);
-})
+
+function validateGuess(guess) {
+  if (isNaN(guess)) {
+    alert('please enter a valid number');
+  } else if (guess < 1) {
+    alert('please enter a valid number');
+  } else if (guess > 100) {
+    alert('please enter a number less than 100');
+  } else {
+    prevGuess.push(guess);
+    if (numGuess === 5) {
+      displayGuess(guess);
+      displayMessage(`Game over.Random Number was ${randomNumber}`);
+      endGame();
+    } else {
+      displayGuess(guess);
+      checkGuess(guess);
+    }
+  }
+}
+
+function checkGuess(guess) {
+  if (guess === randomNumber) {
+    displayMessage('you guesses it right');
+    endGame();
+  } else if (guess < randomNumber) {
+    displayMessage(`number is tooo low`);
+  } else if (guess > randomNumber) {
+    displayMessage(`Number is to High`);
+  }
+}
+function displayGuess(guess) {
+  userInput.value = '';
+  guessSlot.innerHTML += `${guess},`;
+  numGuess++;
+  remaining.innerHTML = `${5 - numGuess}`;
+}
+
+function displayMessage(message) {
+  lowOrHi.innerHTML = `<h2>${message}</h2>`;
+}
+
+function endGame() {
+  userInput.value = '';
+  userInput.setAttribute('disabled', '');
+  p.classList.add('button');
+  p.innerHTML = `<h2 id ="newGame">start new Game</h2>`;
+  startOver.appendChild(p);
+  playGame = false;
+  newGame();
+}
+
+function newGame() {
+  const newGameButton = document.querySelector('#newGame');
+  newGameButton.addEventListener('click', function (e) {
+    randomNumber = randomNumber = parseInt(Math.random() * 100 + 1);
+    prevGuess = [];
+    numGuess = 1;
+    guessSlot.innerHTML = '';
+    remaining.innerHTML = `${5 - numGuess}`;
+    userInput.removeAttribute('disabled');
+    startOver.removeChild(p);
+    playGame = true;
+  });
+}
